@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+
+    server:
+        build:
+            context: .
+        ports:
+            - "8083:80"
+        environment:
+            DB_HOST: mysql
+            DB_DATABASE: development
+            DB_USERNAME: developer
+            DB_PASSWORD: secret
+        volumes:
+            - ./src:/var/www/laravel-interview
+            - ./src/storage/logs/nginx:/var/log/nginx
+        depends_on:
+            - "mysql"
+        networks:
+            - sai-interview
+    mysql:
+        image: mysql:5.7
+        ports:
+            - "3316:3306"
+        environment:
+            # If you change these, delete local data
+            MYSQL_DATABASE: development
+            MYSQL_USER: developer
+            MYSQL_PASSWORD: secret
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - ./containers/mysql/data/:/var/lib/mysql
+        networks:
+            - sai-interview
+
+networks:
+    sai-interview:
+        external: true
